@@ -12,6 +12,7 @@ typedef struct
 } mount_source;
 
 void _start();
+int strcmp(char input[], char check[]);
 
 void _entryPoint();
 #endif /* LOADER_H */

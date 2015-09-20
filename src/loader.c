@@ -59,7 +59,8 @@ void _start()
 		OSFatal(buf);
 	}
 
-	int m_result = FSMount(client, cmd, &m_source, "/vol/smashd", 0x80, -1); //todo: find mountpath limitations
+	char mountPath[128]; // usually /vol/external01
+	int m_result = FSMount(client, cmd, &m_source, mountPath, sizeof(mountPath), -1); 
 
 	if(m_result != 0) {
 		char buf[256];
@@ -68,8 +69,16 @@ void _start()
 	}
 	// OSUnlockMutex
 
+	char defaultMountPath[] = "//vol//external01";
+
+	if(!strcmp(mountPath, defaultMountPath)) {
+		char buf[256];
+		__os_snprintf(buf, 256, "FSMount returned nonstandard mount path: %s", mountPath);
+		OSFatal(buf);
+	}
+
 	uint32_t file_handle;
-	int open_result = FSOpenFile(client, cmd, "/vol/smashd/SMASHD.txt", "r", &file_handle, 0);
+	int open_result = FSOpenFile(client, cmd, "/vol/external01/SMASHD.txt", "r", &file_handle, 0);
 
 	if(open_result != 0) {
 		char buf[256];
@@ -88,4 +97,36 @@ void _start()
 
 	char *message = (char*)&file_buffer[25];
 	OSFatal(message);
+}
+
+int strcmp(char input[], char check[])	// http://stackoverflow.com/a/32266824 todo: add to string.c
+{
+    for (int i = 0;; i++)
+    {
+        if (input[i] == '\0' && check[i] == '\0')
+        {
+            break;
+        }
+        else if (input[i] == '\0' && check[i] != '\0')
+        {
+            return 1;
+        }
+        else if (input[i] != '\0' && check[i] == '\0')
+        {
+            return -1;
+        }
+        else if (input[i] > check[i])
+        {
+            return 1;
+        }
+        else if (input[i] < check[i])
+        {
+            return -1;
+        }
+        else
+        {
+            // characters are the same - continue and check next
+        }
+    }
+    return 0;
 }

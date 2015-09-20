@@ -69,7 +69,7 @@ void _start()
 	}
 	// OSUnlockMutex
 
-	char defaultMountPath[] = "//vol//external01";
+	char defaultMountPath[] = "/vol/external01";
 
 	if(!strcmp(mountPath, defaultMountPath)) {
 		char buf[256];

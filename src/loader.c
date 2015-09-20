@@ -1,12 +1,18 @@
 // Author: dibas
 // Started: 18 Sep 2015
 // Wii U homebrew poc to mount an sd card and read files stored on it
-// Special thanks to the authors of the available examples in the libwiiu repo
+// Special thanks to Marionumber1, crediar and golden45 for helping me with any questions I have/had!
 
 #include "loader.h"
 
 void _start() 
 {
+    /* Load a good stack */
+    asm(
+        "lis %r1, 0x1ab5 ;"
+        "ori %r1, %r1, 0xd138 ;"
+    );
+
 	/* Get a handle to coreinit.rpl */
 	uint32_t coreinit_h;
 	OSDynLoad_Acquire("coreinit.rpl", &coreinit_h);
